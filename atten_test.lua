@@ -7,7 +7,7 @@ require 'optim'
 --require 'cunn'
 require 'misc.attenLSTM'
 
-local shuffle_trainData = true
+local shuffle_trainData = false
 -- model parameters
 attOpt = {} 
 attOpt.feat_dim = 100
@@ -37,7 +37,8 @@ function test (model_attenLSTM,infile_test)
 	        local startb = 1 + (i-1)*attOpt.batch_size
         	local featbatch = feats[{{startb,startb+attOpt.batch_size-1},{},{}}] -- batch_size x shot_num x feat_dim
 	        local featbatch_trans = featbatch:transpose(1,2)  -- shot_num x batch_size x feat_dim
-        	local inputs = mlp:forward(featbatch_trans)
+        	--local inputs = mlp:forward(featbatch_trans)
+		local inputs = featbatch_trans:clone()
 	        local targets = labels[{{startb,startb+attOpt.batch_size-1}}]
 
 	        local outputs = unpack(model_attenLSTM:forward(inputs))
@@ -54,9 +55,9 @@ local params, gradParams = model_attenLSTM:getParameters()
 --------initialize model
 --[[
 model_attenLSTM:clearState()
-torch.save("model_init", model_attenLSTM)
+torch.save("model_init_seqLSTM", model_attenLSTM)
 --]]
-local init_model = torch.load("model_init")
+local init_model = torch.load("model_init_seqLSTM")
 local init_params, init_grads = init_model:getParameters()
 for i = 1, (#params)[1] do
 	params[i] = init_params[i]
@@ -105,7 +106,8 @@ for epoch = 1, epoch_num do
 		end
 
 		local featbatch_trans = featbatch:transpose(1,2)  -- shot_num x batch_size x feat_dim
-		local inputs = mlp:forward(featbatch_trans)
+		--local inputs = mlp:forward(featbatch_trans)
+		local inputs = featbatch_trans:clone()
 
 		--------------forward
 		local outputs = unpack(model_attenLSTM:forward(inputs))
@@ -115,13 +117,13 @@ for epoch = 1, epoch_num do
 		local gradOutputs = criterion:backward(outputs, targets)
 		model_attenLSTM:backward(inputs, gradOutputs)
 		--------------update1
-		--
+		--[[
 		model_attenLSTM:updateParameters(0.01)
 		model_attenLSTM:forget()
 		model_attenLSTM:zeroGradParameters()
-		--
+		--]]
 		--------------update2
-		--[[
+		--
 		feval = function(params_new)
         		-- copy the weight if are changed
 	        	if params ~= params_new then

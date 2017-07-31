@@ -1,5 +1,8 @@
 require 'nn'
 require 'os'
+--require 'cutorch'
+--require 'cunn'
+
 local utils = require 'misc.utils'
 local attenmodel = require 'misc.attenmodel'
 local layer, parent = torch.class('nn.attenLSTM','nn.Module')
@@ -16,8 +19,9 @@ function layer:__init(opt)
 	local mlp_input_dim = self.feat_dim + self.hidden_size
 	local mlp_mid_dim = self.mlp_mid_dim
 
-	self.rnn = nn.Sequencer(nn.FastLSTM(self.feat_dim, self.hidden_size):maskZero(1))
-	--self.rnn = nn.SeqLSTM(self.feat_dim, self.hidden_size)
+	--self.rnn = nn.Sequencer(nn.FastLSTM(self.feat_dim, self.hidden_size):maskZero(1))
+	self.rnn = nn.SeqLSTM(self.feat_dim, self.hidden_size)
+	self.rnn.maskzero = true
 	self.atten = attenmodel.attenfunc(mlp_input_dim, mlp_mid_dim, self.event_num, self.feat_dim, self.hidden_size, self.shot_num, self.batch_size)
 end
 
@@ -70,8 +74,11 @@ function layer:updateGradInput(input, gradOutput)
 	for i = 1, self.shot_num*2,2 do
 		table.insert(d_hidden, d_inputhidden[i+1])
 	end
-	local dummy = self.rnn:backward(input,d_hidden)
-
+	d_hidden_ = nn.JoinTable(1):forward(d_hidden):reshape(self.shot_num,self.batch_size,self.hidden_size)
+	if input:type() == 'torch.CudaTensor' then
+		d_hidden_ = d_hidden_:cuda()
+	end
+	local dummy = self.rnn:backward(input,d_hidden_)
 	self.gradInput = dummy
 	return self.gradInput
 end
