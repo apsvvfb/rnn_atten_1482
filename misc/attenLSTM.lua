@@ -51,8 +51,7 @@ end
 
 function layer:updateGradInput(input, gradOutput)
 
-	local dummy = self.atten:backward(input, gradOutput)
+	self.gradInput = self.atten:backward(input, gradOutput)
 
-	self.gradInput = dummy
 	return self.gradInput
 end

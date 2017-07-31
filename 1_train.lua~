@@ -9,7 +9,7 @@ require 'rnn'
 require 'optim'
 require 'hdf5'
 require 'os'
-require 'misc.attenLSTM'
+require 'MyCrossEntropyCriterion'
 
 cmd = torch.CmdLine()
 cmd:text()
@@ -94,24 +94,22 @@ attOpt.feat_dim = featdim
 attOpt.hidden_size = hiddenSize
 attOpt.batch_size = batchSize
 attOpt.shot_num = shotNum
-attOpt.mlp_mid_dim = math.floor(featdim/2)
 attOpt.event_num = numTargetClasses
+attOpt.mlp_mid_dim = math.floor(featdim/2)
 
-
-local model = nn.attenLSTM(attOpt)
-model:cuda()
-local params, grads = model:getParameters()
+local model_attenLSTM = nn.attenLSTM(attOpt)
+model_attenLSTM:cuda()
+local params, gradParams = model_attenLSTM:getParameters()
 
 local weight=torch.Tensor(21):fill(1)
 weight[21]=0.02
 local criterion_hard = nn.MaskZeroCriterion(nn.ClassNLLCriterion(weight),1)
-criterion_hard:cuda()
 
 local timer = torch.Timer()
 local bactchseqLenMax = 0
 local bactchseqLens = torch.Tensor(batchSize):fill(0)
 local feattemp = torch.Tensor(batchSize, seqLengthMax, featdim):fill(0)
-local labelbatch = torch.Tensor(batchSize):fill(0)
+local labelbatch = torch.Tensor(batchSize):fill(0):cuda()
 
 local sgd_params = {
 	learningRate = lr,
@@ -119,12 +117,6 @@ local sgd_params = {
 	weightDecay = wd,
 	momentum = momentum
 }
-
--- save initial model
-print("saving initial model")
-model:clearState()
-torch.save(string.format("%s/model_100ex_batch%d_unit%d_epoch%d", modelSavingDir, batchSize, hiddenSize, 0), model)
-print("finish saving initial model")
 
 local allnum = 0
 for epi = 1, epoch do
@@ -159,7 +151,6 @@ for epi = 1, epoch do
 			local input = {} 
 			--local targets_hard = {}
 			local targets_hard = labelbatch
-			targets_hard:cuda()
 			local seqPadding = torch.Tensor(batchSize):fill(bactchseqLenMax)-bactchseqLens
 
 			----right-aligned, padding zero in the left
@@ -191,7 +182,8 @@ for epi = 1, epoch do
 				grads:zero()
 
 				-- evaluate the loss function and its derivative with respect to x, given a mini batch
-				local output = unpack(model:forward(input))
+				local output = model:forward(input)
+
 				local loss_x_hard = criterion_hard:forward(output, targets_hard)
 				local gradOutputs_hard = criterion_hard:backward(output, targets_hard)
 				model:backward(input, gradOutputs_hard)
@@ -203,7 +195,7 @@ for epi = 1, epoch do
 			bactchseqLens, feattemp, labelbatch, scorelabels, input, targets = nil, nil, nil, nil, nil, nil
 			bactchseqLens = torch.Tensor(batchSize):fill(0)
 			feattemp = torch.Tensor(batchSize, seqLengthMax, featdim):fill(0)
-			labelbatch = torch.Tensor(batchSize):fill(0) 
+			labelbatch = torch.Tensor(batchSize):fill(0):cuda() 
 			--print("memory:"..collectgarbage("count").."KB")	
 		end
 		--collectgarbage()
