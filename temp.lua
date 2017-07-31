@@ -1,20 +1,27 @@
 require 'os'
-require 'cutorch'
-require 'cunn'
 require 'nn'
 require 'nngraph'
-torch.manualSeed(1)
-input = nn.Identity()()
-L1 = nn.ReLU()(nn.Linear(3, 1)(input))
-net = nn.Sequential()
-net:add(L1)
-g = nn.gModule({input}, {L1})
-x = torch.randn(3)
-g:forward(x)
-g:cuda()
-g:forward(x:cuda())
-g:float()
-g:forward(x)
+
+module = nn.ZipTable()
+print(module:forward{ {'a1','a2'}, {'b1','b2'}, {'c1','c2'} })
+{ {'a1','b1','c1'}, {'a2','b2','c2'} }
+os.exit()
+
+
+table1,table2 ={},{}
+table.insert(table1,torch.randn(3,4))
+table.insert(table1,torch.randn(3,4))
+table.insert(table1,torch.randn(3,4))
+
+table.insert(table2,torch.randn(3,4))
+table.insert(table2,torch.randn(3,4))
+
+input={table1,table2}
+print(input)
+
+module = nn.ZipTable()
+out=module:forward(input)
+print(out)
 
 os.exit()
 

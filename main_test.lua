@@ -33,13 +33,12 @@ end
 targets = torch.Tensor(attOpt.batch_size):fill(3) --:cuda()
 --------------forward
 outputs = unpack(model_attenLSTM:forward(inputs))
+print(outputs)
 loss = criterion:forward(outputs, targets)
-
+print(loss)
 ---------------backward
 gradOutputs = criterion:backward(outputs, targets)
 model_attenLSTM:backward(inputs, gradOutputs)
---------------print
-print(loss)
 --------------update1
 --[[
 model_attenLSTM:updateParameters(0.01)

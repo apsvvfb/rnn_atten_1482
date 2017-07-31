@@ -7,17 +7,20 @@ function attenmodel.attenfunc(input_dim, mid_dim, event_num, feat_dim, hidden_si
         local inputs = {}
         local outputs = {}
 
+        table.insert(inputs, nn.Identity()())
+        table.insert(inputs, nn.Identity()())
+
         local mlp = nn.Sequential();  -- make a multi-layer perceptron
         mlp:add(nn.MaskZero(nn.Linear(input_dim, mid_dim),1))
         mlp:add(nn.MaskZero(nn.Tanh(),1))
         mlp:add(nn.MaskZero(nn.Linear(mid_dim, event_num),1))
 
 	local H_tmp, A, x_i, h_i, xh_i, a_i
-        for i = 1, shot_num*2,2 do
-                table.insert(inputs, nn.Identity()())
-		table.insert(inputs, nn.Identity()())
-                x_i = inputs[i]
-		h_i = inputs[i+1]
+	local x = inputs[1]
+	local H_v = inputs[2]
+        for i = 1, shot_num do
+                x_i = x[i]
+                h_i = H_v[i]
                 xh_i = nn.JoinTable(2){x_i, h_i}          --batch x (feat_dim + hiddensize)
                 a_i = mlp(xh_i)                           --batch x event_num     
                 if i == 1 then
