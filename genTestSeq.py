@@ -3,7 +3,6 @@ import sys
 from random import randint
 import h5py
 
-
 feat_dim = 100 #1024
 #batch_size = 5 
 shot_num = 30 #30
@@ -26,7 +25,6 @@ for i in range(total_sample_num):
 with h5py.File(outfile_train, 'w') as hf:
 	hf.create_dataset('feature', data=out)
 	hf.create_dataset('label', data=labels)
-
 
 ###########test
 total_sample_num = 10000

@@ -1,5 +1,6 @@
 require 'nn'
 require 'os'
+require 'hdf5'
 --require 'cutorch'
 --require 'cunn'
 
@@ -63,14 +64,21 @@ function layer:updateOutput(input)
 		table.insert(self.input_and_hidden, hidden[i])
 	end	
 
-	--local softmax_scores, atten_weights = self.atten:forward(self.input_and_hidden)
-	--return {softmax_scores, atten_weight}
-
+	-- set attention weights to 1, to show the effectiveness of attenweight
+	--[[
+	for _, node in ipairs(self.atten.forwardnodes) do
+                if node.data.annotations.name == 'mlp_layer' then
+			node.data.module.modules[3].modules[1].weight:fill(0.0)
+			node.data.module.modules[3].modules[1].bias:fill(1.0)
+                end
+        end
+	--]]
 	local softmax_scores = self.atten:forward(self.input_and_hidden)
-	local atten_weight = self.atten.forwardnodes[241].data.module.output
-	print(#atten_weight)
+	local atten_weight = self.atten.forwardnodes[215].data.module.output
+	--print(#atten_weight)
 
-	return {softmax_scores}
+	return {softmax_scores,atten_weight}
+	--return {softmax_scores}
 end
 
 function layer:updateGradInput(input, gradOutput)

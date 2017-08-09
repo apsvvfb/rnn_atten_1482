@@ -1,0 +1,7 @@
+*.h5
+*.t7
+./_atten_weight/*
+*.*~
+temp*
+tmp*
+*.pyc
