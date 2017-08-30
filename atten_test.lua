@@ -15,11 +15,21 @@ local outpath = "./_atten_weight"
 attOpt = {} 
 attOpt.feat_dim = 100
 attOpt.shot_num = 30
-
 attOpt.batch_size = 200
 attOpt.hidden_size = 10
 attOpt.event_num = 10
 attOpt.mlp_mid_dim = 5
+
+
+--[[
+attOpt.feat_dim = 7
+attOpt.shot_num = 3
+attOpt.batch_size = 2
+attOpt.hidden_size = 5
+attOpt.event_num = 4
+attOpt.mlp_mid_dim = 6
+--]]
+
 sgd_params = {
    learningRate = 0.01,
 }

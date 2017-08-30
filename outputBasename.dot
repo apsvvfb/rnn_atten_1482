@@ -1,0 +1,219 @@
+digraph G {
+	graph [bb="0,0,1258,2714"];
+	node [label="\N",
+		shape=oval
+	];
+	n1	 [height=1.041,
+		label="Node1\nmodule = nn.LogSoftMax\lreverseMap = {}",
+		pos="654,150",
+		tooltip="[./misc/attenmodel.lua]:66_",
+		width=3.1506];
+	n2	 [height=1.041,
+		label="Node2\ninput = {}\lreverseMap = {}",
+		pos="654,38",
+		tooltip="[[C]]:-1_",
+		width=2.1497];
+	n1 -> n2	 [pos="e,654,75.844 654,112.37 654,103.93 654,94.829 654,86.011"];
+	n3	 [height=1.041,
+		label="Node3\nmodule = nn.JoinTable\lreverseMap = {}",
+		pos="654,262",
+		tooltip="[./misc/attenmodel.lua]:64_",
+		width=2.817];
+	n3 -> n1	 [pos="e,654,187.84 654,224.37 654,215.93 654,206.83 654,198.01"];
+	n4	 [height=4.2819,
+		label="Node4\nmodule = nn.Sequential {\l  [input -> (1) -> (2) -> output]\l  (1): nn.SplitTable\l  (2): nn.ParallelTable {\l    input\l      |`\
+-> (1): nn.Linear(5 -> 1)\l      |`-> (2): nn.Linear(5 -> 1)\l      |`-> (3): nn.Linear(5 -> 1)\l       `-> (4): nn.Linear(5 -> \
+1)\l       ... -> output\l  }\l}\lreverseMap = {}",
+		pos="654,490",
+		tooltip="[./misc/attenmodel.lua]:64_",
+		width=3.6797];
+	n4 -> n3	 [pos="e,654,299.48 654,335.75 654,326.56 654,317.77 654,309.68"];
+	n5	 [height=1.3356,
+		label="Node5\nmodule = nn.MM\lreverseMap = {}\lmapindex = {Node6,Node7}",
+		pos="654,728",
+		tooltip="[./misc/attenmodel.lua]:56_",
+		width=3.4507];
+	n5 -> n4	 [pos="e,654,644.44 654,679.81 654,671.99 654,663.51 654,654.63"];
+	n6	 [height=1.3356,
+		label="norm_AW (6)\ndesc = normalize attention weight\nmodule = nn.Reshape(2x4x3)\lreverseMap = {}",
+		pos="567,860",
+		tooltip="[./misc/attenmodel.lua]:54_",
+		width=3.9798];
+	n6 -> n5	 [pos="e,623.47,774.61 597.92,812.8 604.34,803.21 611.16,793.01 617.75,783.16"];
+	n7	 [height=1.041,
+		label="Node7\nmodule = nn.Reshape(3x5)\lreverseMap = {}",
+		pos="743,1640",
+		tooltip="[./misc/attenmodel.lua]:40_",
+		width=3.2553];
+	n7 -> n5	 [pos="e,695.9,773.6 742.51,1602.5 741.92,1555.1 741,1469.9 741,1397 741,1397 741,1397 741,981 741,905.26 748.28,881.86 719,812 714.62,\
+801.56 708.56,791.31 701.89,781.78"];
+	n8	 [height=1.041,
+		label="Node8\nmodule = nn.JoinTable\lreverseMap = {}",
+		pos="562,982",
+		tooltip="[./misc/attenmodel.lua]:54_",
+		width=2.817];
+	n8 -> n6	 [pos="e,565.02,908.5 563.53,944.34 563.87,936.22 564.23,927.42 564.6,918.68"];
+	n9	 [height=1.6303,
+		label="cont_H_layer (9)\ndesc = contanenate HiddenVec layer\nmodule = nn.JoinTable\lreverseMap = {}\lmapindex = {Node11,Node12}",
+		pos="782,1959",
+		tooltip="[./misc/attenmodel.lua]:36_",
+		width=4.2561];
+	n9 -> n7	 [pos="e,747.5,1677.6 774.89,1900.2 767.38,1839.2 755.69,1744.2 748.74,1687.7"];
+	n10	 [height=3.6927,
+		label="Node10\nmodule = nn.Sequential {\l  [input -> (1) -> (2) -> output]\l  (1): nn.SplitTable\l  (2): nn.ParallelTable {\l    input\l      |`\
+-> (1): nn.Normalize(1)\l       `-> (2): nn.Normalize(1)\l       ... -> output\l  }\l}\lreverseMap = {}",
+		pos="553,1189",
+		tooltip="[./misc/attenmodel.lua]:54_",
+		width=3.6797];
+	n10 -> n8	 [pos="e,560.39,1019.6 558.79,1056.1 559.2,1046.9 559.59,1037.9 559.95,1029.7"];
+	n11	 [height=1.6303,
+		label="cont_H_layer (11)\ndesc = contanenate HiddenVec layer\nmodule = nn.JoinTable\lreverseMap = {}\lmapindex = {Node14,Node15}",
+		pos="723,2187",
+		tooltip="[./misc/attenmodel.lua]:36_",
+		width=4.2561];
+	n11 -> n9	 [pos="e,766.99,2017.5 738.04,2128.4 746.09,2097.6 756.04,2059.5 764.43,2027.3"];
+	n12	 [height=1.041,
+		label="h3 (12)\nmodule = nn.Identity\lreverseMap = {}",
+		pos="1163,2320",
+		tooltip="[./misc/attenmodel.lua]:20_",
+		width=2.6117];
+	n12 -> n9	 [pos="e,923.64,1981.6 1176,2282.6 1188.2,2241.5 1200.4,2174.3 1170,2128 1117.6,2048.2 1018.4,2006.2 933.4,1984.1"];
+	n27	 [height=1.6303,
+		label="cont_X_H_layer (27)\ndesc = contanenate X_H layer\nmodule = nn.JoinTable\lreverseMap = {}\lmapindex = {Node30,Node12}",
+		pos="1028,2187",
+		tooltip="[./misc/attenmodel.lua]:26_",
+		width=3.7034];
+	n12 -> n27	 [pos="e,1082.3,2240.7 1127.9,2284.9 1116.1,2273.5 1102.7,2260.5 1089.6,2247.7"];
+	n13	 [height=1.041,
+		label="Node13\nmodule = nn.Transpose\lreverseMap = {}",
+		pos="534,1396",
+		tooltip="[./misc/attenmodel.lua]:45_",
+		width=2.8644];
+	n13 -> n10	 [pos="e,540.79,1321.8 537.4,1358.4 538.14,1350.3 538.97,1341.3 539.85,1331.8"];
+	n14	 [height=1.041,
+		label="h1 (14)\nmodule = nn.Identity\lreverseMap = {}",
+		pos="751,2320",
+		tooltip="[./misc/attenmodel.lua]:20_",
+		width=2.6117];
+	n14 -> n11	 [pos="e,735.37,2245.9 743.2,2282.5 741.42,2274.2 739.47,2265 737.5,2255.9"];
+	n25	 [height=1.6303,
+		label="cont_X_H_layer (25)\ndesc = contanenate X_H layer\nmodule = nn.JoinTable\lreverseMap = {}\lmapindex = {Node28,Node14}",
+		pos="418,2187",
+		tooltip="[./misc/attenmodel.lua]:26_",
+		width=3.7034];
+	n14 -> n25	 [pos="e,514.82,2227.6 684.06,2293.6 647.61,2279.7 601.76,2262.1 561,2246 549.09,2241.3 536.63,2236.3 524.26,2231.4"];
+	n15	 [height=1.041,
+		label="h2 (15)\nmodule = nn.Identity\lreverseMap = {}",
+		pos="545,2320",
+		tooltip="[./misc/attenmodel.lua]:20_",
+		width=2.6117];
+	n15 -> n11	 [pos="e,653.18,2239.4 589,2286.6 605.94,2274.2 625.82,2259.5 645.01,2245.4"];
+	n26	 [height=1.6303,
+		label="cont_X_H_layer (26)\ndesc = contanenate X_H layer\nmodule = nn.JoinTable\lreverseMap = {}\lmapindex = {Node29,Node15}",
+		pos="133,2187",
+		tooltip="[./misc/attenmodel.lua]:26_",
+		width=3.7034];
+	n15 -> n26	 [pos="e,226.49,2228.9 478.1,2293.5 466.17,2289.4 453.78,2285.4 442,2282 369,2261.1 347.54,2268.4 275,2246 262.21,2242 248.96,2237.4 235.93,\
+2232.5"];
+	n16	 [height=1.3356,
+		label="Node16\ninput = {}\lselectindex = 6\lreverseMap = {}",
+		pos="1143,2442",
+		tooltip="[[C]]:-1_-6",
+		width=2.1497];
+	n16 -> n12	 [pos="e,1156.9,2357.6 1150.8,2393.9 1152.3,2385.2 1153.8,2376.2 1155.2,2367.5"];
+	n17	 [height=1.3356,
+		label="AW_2 (17)\ndesc = attention weight\nmodule = nn.Transpose\lreverseMap = {}",
+		pos="533,1518",
+		tooltip="[./misc/attenmodel.lua]:42_",
+		width=2.8644];
+	n17 -> n13	 [pos="e,533.69,1433.7 533.4,1469.6 533.47,1461.1 533.54,1452.3 533.61,1443.8"];
+	n18	 [height=1.3356,
+		label="Node18\ninput = {}\lselectindex = 2\lreverseMap = {}",
+		pos="743,2442",
+		tooltip="[[C]]:-1_-2",
+		width=2.1497];
+	n18 -> n14	 [pos="e,748.56,2357.6 746.14,2393.9 746.71,2385.3 747.31,2376.4 747.88,2367.8"];
+	n19	 [height=1.3356,
+		label="Node19\ninput = {}\lselectindex = 4\lreverseMap = {}",
+		pos="553,2442",
+		tooltip="[[C]]:-1_-4",
+		width=2.1497];
+	n19 -> n15	 [pos="e,547.44,2357.6 549.86,2393.9 549.29,2385.3 548.69,2376.4 548.12,2367.8"];
+	n20	 [height=1.041,
+		label="Node20\nreverseMap = {}\lnSplitOutputs = 6",
+		pos="640,2564",
+		tooltip="[[C]]:-1_ split at [...rograms/distro/install/share/lua/5.1/nngraph/gmodule.lua]:96-mnode",
+		width=2.2307];
+	n20 -> n16	 [pos="e,1080.9,2470.8 717.06,2553.1 795.94,2541.8 921.55,2521 1027,2490 1041.6,2485.7 1056.9,2480.2 1071.5,2474.6"];
+	n20 -> n18	 [pos="e,707.09,2484.8 669.24,2528.9 678.9,2517.7 689.85,2504.9 700.31,2492.7"];
+	n20 -> n19	 [pos="e,584.3,2486.2 614.84,2528.3 607.16,2517.7 598.56,2505.8 590.26,2494.4"];
+	n31	 [height=1.3356,
+		label="Node31\ninput = {}\lselectindex = 1\lreverseMap = {}",
+		pos="359,2442",
+		tooltip="[[C]]:-1_-1",
+		width=2.1497];
+	n20 -> n31	 [pos="e,421.44,2470.6 580.7,2538.4 547.01,2524.4 504.08,2506.3 466,2490 454.6,2485.1 442.54,2479.9 430.79,2474.7"];
+	n32	 [height=1.3356,
+		label="Node32\ninput = {}\lselectindex = 3\lreverseMap = {}",
+		pos="159,2442",
+		tooltip="[[C]]:-1_-3",
+		width=2.1497];
+	n20 -> n32	 [pos="e,220.65,2471.2 563.51,2552.4 488.31,2540.8 370.78,2520 272,2490 258.21,2485.8 243.79,2480.5 230.05,2475.1"];
+	n33	 [height=1.3356,
+		label="Node33\ninput = {}\lselectindex = 5\lreverseMap = {}",
+		pos="941,2442",
+		tooltip="[[C]]:-1_-5",
+		width=2.1497];
+	n20 -> n33	 [pos="e,877.75,2469.9 701.46,2539.8 738.51,2525.6 786.58,2507.1 829,2490 841.75,2484.9 855.27,2479.3 868.33,2473.9"];
+	n21	 [height=1.041,
+		label="Node21\nmodule = nn.Reshape()\lreverseMap = {}",
+		pos="496,1640",
+		tooltip="[./misc/attenmodel.lua]:42_",
+		width=2.8644];
+	n21 -> n17	 [pos="e,518.55,1565.9 507.2,1602.7 509.85,1594.1 512.74,1584.7 515.6,1575.4"];
+	n22	 [height=1.041,
+		label="Node22\ninput = {}\lreverseMap = {}",
+		pos="640,2676",
+		tooltip="[[C]]:-1_",
+		width=2.1497];
+	n22 -> n20	 [pos="e,640,2601.8 640,2638.4 640,2629.9 640,2620.8 640,2612"];
+	n23	 [height=1.041,
+		label="Node23\nmodule = nn.JoinTable\lreverseMap = {}",
+		pos="480,1752",
+		tooltip="[./misc/attenmodel.lua]:42_",
+		width=2.817];
+	n23 -> n21	 [pos="e,490.7,1677.5 485.33,1714.4 486.58,1705.7 487.94,1696.4 489.25,1687.4"];
+	n24	 [height=3.6927,
+		label="maptable_mlp_layer (24)\ndesc = maptable mlp layer\nmodule = nn.MapTable {\l  nn.Sequential {\l          [input -> (1) -> (2) -> (\
+3) -> output]\l          (1): nn.MaskZero @ nn.Linear(12 -> 6)\l          (2): nn.MaskZero @ nn.Tanh\l          (3): nn.MaskZero @ \
+nn.Linear(6 -> 4)\l        }\l}\lreverseMap = {}\lmapindex = {Node25,Node26,Node27}",
+		pos="418,1959",
+		tooltip="[./misc/attenmodel.lua]:41_",
+		width=5.3617];
+	n24 -> n23	 [pos="e,468.97,1789.5 457.09,1828.8 460.25,1818.3 463.29,1808.2 466.07,1799.1"];
+	n25 -> n24	 [pos="e,418,2092.1 418,2128.1 418,2119.9 418,2111.2 418,2102.3"];
+	n26 -> n24	 [pos="e,292.09,2059.8 196.96,2135.3 222.8,2114.8 253.64,2090.3 283.98,2066.3"];
+	n27 -> n24	 [pos="e,548.54,2057.1 935.69,2144.7 919.06,2138.3 901.7,2132.4 885,2128 770.14,2097.4 731.37,2133.5 620,2092 598.79,2084.1 577.54,2073.6 \
+557.2,2062.1"];
+	n28	 [height=1.041,
+		label="x1 (28)\nmodule = nn.Identity\lreverseMap = {}",
+		pos="339,2320",
+		tooltip="[./misc/attenmodel.lua]:19_",
+		width=2.6117];
+	n28 -> n25	 [pos="e,384.27,2243.9 360.59,2283.2 366.3,2273.7 372.64,2263.2 378.97,2252.7"];
+	n29	 [height=1.041,
+		label="x2 (29)\nmodule = nn.Identity\lreverseMap = {}",
+		pos="133,2320",
+		tooltip="[./misc/attenmodel.lua]:19_",
+		width=2.6117];
+	n29 -> n26	 [pos="e,133,2245.9 133,2282.5 133,2274.3 133,2265.2 133,2256.1"];
+	n30	 [height=1.041,
+		label="x3 (30)\nmodule = nn.Identity\lreverseMap = {}",
+		pos="957,2320",
+		tooltip="[./misc/attenmodel.lua]:19_",
+		width=2.6117];
+	n30 -> n27	 [pos="e,997.41,2244.4 976.4,2283.2 981.42,2273.9 986.98,2263.7 992.54,2253.4"];
+	n31 -> n28	 [pos="e,345.09,2357.6 351.15,2393.9 349.71,2385.2 348.2,2376.2 346.75,2367.5"];
+	n32 -> n29	 [pos="e,140.89,2357.4 148.87,2394.3 146.95,2385.4 144.93,2376.1 143.01,2367.2"];
+	n33 -> n30	 [pos="e,952.13,2357.6 947.28,2393.9 948.44,2385.2 949.64,2376.2 950.8,2367.5"];
+}

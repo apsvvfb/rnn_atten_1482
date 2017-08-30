@@ -74,7 +74,11 @@ function layer:updateOutput(input)
         end
 	--]]
 	local softmax_scores = self.atten:forward(self.input_and_hidden)
-	local atten_weight = self.atten.forwardnodes[215].data.module.output
+	--[[
+	print(self.atten.forwardnodes)
+	os.exit()
+	--]]
+	local atten_weight = self.atten.forwardnodes[156].data.module.output
 	--print(#atten_weight)
 
 	return {softmax_scores,atten_weight}

@@ -10,37 +10,31 @@ function attenmodel.attenfunc(input_dim, mid_dim, event_num, feat_dim, hidden_si
         mlp:add(nn.MaskZero(nn.Linear(input_dim, mid_dim),1))
         mlp:add(nn.MaskZero(nn.Tanh(),1))
         mlp:add(nn.MaskZero(nn.Linear(mid_dim, event_num),1))
-	local map = nn.MapTable()
-	map:add(mlp)
 
         local H, A, x_i, h_i, xh_i, a_i
-	local xh = {}
         for i = 1, shot_num*2,2 do
                 table.insert(inputs, nn.Identity()())
                 table.insert(inputs, nn.Identity()())
 		shotid = 0.5 * i + 0.5
 		namex = "x"..shotid
 		nameh = "h"..shotid
-                x_i = inputs[i]:annotate{name =namex}			--batch x feat_dim
+                x_i = inputs[i]:annotate{name =namex}				--batch x feat_dim
                 h_i = inputs[i+1]:annotate{name =nameh}			--batch x hidden_size
                 xh_i = nn.JoinTable(2){x_i, h_i}:annotate{name ='cont_X_H_layer', description = 'contanenate X_H layer'}	--batch x (feat_dim + hiddensize)
-		table.insert(xh,xh_i)
-                --a_i = mlp(xh_i):annotate{name ='mlp_layer', description = 'mlp layer'}   --batch x event_num     
+                a_i = mlp(xh_i):annotate{name ='mlp_layer', description = 'mlp layer'}   --batch x event_num     
                 if i == 1 then
                         H = h_i
-			--A = a_i --A and a_i use same memory, so when a_i change, A will change.
-			--[[use two lines below because of problem of memory copy --]]
-                        --B=nn.SplitTable(1)(A)
-                        --A=nn.Reshape(batch_size, event_num)(nn.JoinTable(1)(B))
+			A = a_i --A and a_i use same memory, so when a_i change, A will change.
+			--use two lines below because of problem of memory copy 
+                        B=nn.SplitTable(1)(A)
+                        A=nn.Reshape(batch_size, event_num)(nn.JoinTable(1)(B))
                 else
                         H = nn.JoinTable(1,1){H, h_i}:annotate{name ='cont_H_layer', description = 'contanenate HiddenVec layer'}	--batch x (hidden_size*shot_num)
-                        --A = nn.JoinTable(1,1){A, a_i}:annotate{name ='cont_A_layer', description = 'contanenate AttenWeight layer'}	--batch x (event_num*shot_num)
+                        A = nn.JoinTable(1,1){A, a_i}:annotate{name ='cont_A_layer', description = 'contanenate AttenWeight layer'}	--batch x (event_num*shot_num)
                 end
         end
 	local H2 = nn.Reshape(shot_num,hidden_size,true)(H)	--batch x shot_num x hidden_size
-	local A1 = map(xh):annotate{name ='maptable_mlp_layer', description = 'maptable mlp layer'}	--table: shot_num, batch x event_num
-	local A2 = nn.Transpose({1,2})(nn.Reshape(shot_num,batch_size,event_num)(nn.JoinTable(1)(A1)))		--batch x shot_num x event_num
-	--local A2 = nn.Reshape(shot_num,event_num,true)(A)	--batch x shot_num x event_num
+	local A2 = nn.Reshape(shot_num,event_num,true)(A)	--batch x shot_num x event_num
         A2:annotate{name ='AW_2', description = 'attention weight'}
 	local A3 = nn.Transpose({1,2}):setNumInputDims(2)(A2)	--batch x event_num x shot_num
 
@@ -51,7 +45,7 @@ function attenmodel.attenfunc(input_dim, mid_dim, event_num, feat_dim, hidden_si
 	local m = nn.Sequential()
         m:add(nn.SplitTable(1))
         m:add(normalize)
-	local A4 = nn.Reshape(batch_size, event_num, shot_num)(nn.JoinTable(1)(m(A3))):annotate{name ='norm_AW', description = 'normalize attention weight'}	--batch x event_num x shot_num
+	local A4 = nn.Reshape(batch_size, event_num, shot_num)(nn.JoinTable(1)(m(A3)))			--batch x event_num x shot_num
 
 	local H_bar = nn.MM(){A4,H2}	--batch x event_num x hidden_size
 	local reduceDim = nn.ParallelTable()
@@ -68,10 +62,8 @@ function attenmodel.attenfunc(input_dim, mid_dim, event_num, feat_dim, hidden_si
         table.insert(outputs,softscore)
         attenmodule = nn.gModule(inputs, outputs)
 
-	--[[
 	graph.dot(attenmodule.fg, 'ATTEN', 'outputBasename')
 	os.exit()
-	--]]
 
         return(attenmodule)
 end

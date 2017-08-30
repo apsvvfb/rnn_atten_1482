@@ -64,7 +64,7 @@ def main(params):
 	outfile_train = (params['train_file'])
         outfile_test = (params['test_file'])
 
-	train_num = 20000
+	train_num = 100000
 	test_num = 10000
 	shot_num = 30
 	label_num = 10

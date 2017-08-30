@@ -2,6 +2,6 @@
 *.t7
 ./_atten_weight/*
 *.*~
-temp*
-tmp*
+*temp*
+*tmp*
 *.pyc
